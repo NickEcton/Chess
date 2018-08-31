@@ -112,6 +112,11 @@ class Knight < Piece
 end
 
 class Pawn < Piece
+  def move_dirs
+    move_dirs = [[1,0]]
+    moves[move_diffs]
+  end
+  
   def to_s
     if @color == :black
       "♟"
@@ -126,7 +131,7 @@ class NullPiece < Piece
   attr_reader :color, :symbol
 
   def inspect
-    "N"
+    " "
   end
   def initialize
     @color
@@ -134,7 +139,7 @@ class NullPiece < Piece
   end
 
   def to_s
-    "N"
+    " "
   end
 
 
