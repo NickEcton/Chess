@@ -98,8 +98,12 @@ module SlidingPiece
       end
     end
 
-    result << non_angle_moves if not_angle
-    result << diagonal_moves if diagonal
+    unless non_angle_moves.empty?
+      result << non_angle_moves if not_angle
+    end
+    unless diagonal_moves.empty?
+      result << diagonal_moves if diagonal
+    end 
 
     result
   end

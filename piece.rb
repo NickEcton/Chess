@@ -1,6 +1,8 @@
 require_relative 'Sliders'
 require_relative 'stepers'
+require_relative 'Pawn_moves'
 require_relative 'board'
+require 'byebug'
 #require
 require 'singleton'
 
@@ -112,11 +114,15 @@ class Knight < Piece
 end
 
 class Pawn < Piece
+
+  include PawnMoves
   def move_dirs
-    move_dirs = [[1,0]]
-    moves[move_diffs]
+    debugger
+    # move_diffs = [[1,0],[1,-1],[1 ,1],[-1,0][-1,-1],[-1,1]]
+    moves
   end
-  
+
+
   def to_s
     if @color == :black
       "♟"
