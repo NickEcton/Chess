@@ -60,7 +60,7 @@ module SlidingPiece
       end
     end
 
-#CHECKS VERTICAL MOVEMENT
+#CHECKS DIAGONAL MOVEMENT
 
 
 
@@ -69,41 +69,69 @@ module SlidingPiece
     (1..7).each do |i|
       left_up = [self.pos[0]-i, self.pos[1]-i]
       if @board.valid_pos?(left_up)
-        break unless @board[left_up].is_a?(NullPiece)
-        diagonal_moves << left_up
+        if @board[left_up].is_a?(NullPiece)
+          diagonal_moves << left_up
+        else
+          if @board[left_up].color != self.color
+            diagonal_moves << left_up
+          end
+        end
+      else
+        break
       end
     end
 
     (1..7).each do |i|
       right_up = [self.pos[0]-i, self.pos[1]+i]
       if @board.valid_pos?(right_up)
-        break unless @board[right_up].is_a?(NullPiece)
-        diagonal_moves << right_up
+        if @board[right_up].is_a?(NullPiece)
+          diagonal_moves << right_up
+        else
+          if @board[right_up].color != self.color
+            diagonal_moves << right_up
+          end
+        end
+      else
+        break
       end
     end
 
     (1..7).each do |i|
       left_down = [self.pos[0]+i, self.pos[1]-i]
       if @board.valid_pos?(left_down)
-        break unless @board[left_down].is_a?(NullPiece)
-        diagonal_moves << left_down
+        if @board[left_down].is_a?(NullPiece)
+          diagonal_moves << left_down
+        else
+          if @board[left_down].color != self.color
+            diagonal_moves << left_down
+          end
+        end
+      else
+        break
       end
     end
 
     (1..7).each do |i|
       right_down = [self.pos[0]+i, self.pos[1]+i]
       if @board.valid_pos?(right_down)
-        break unless @board[right_down].is_a?(NullPiece)
-        diagonal_moves << right_down
+        if @board[right_down].is_a?(NullPiece)
+          diagonal_moves << right_down
+        else
+          if @board[right_down].color != self.color
+            diagonal_moves << right_down
+          end
+        end
+      else
+        break
       end
     end
 
     unless non_angle_moves.empty?
-      result << non_angle_moves if not_angle
+      result += non_angle_moves if not_angle
     end
     unless diagonal_moves.empty?
-      result << diagonal_moves if diagonal
-    end 
+      result += diagonal_moves if diagonal
+    end
 
     result
   end

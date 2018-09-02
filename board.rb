@@ -39,23 +39,80 @@ class Board
     end
   end
 
-  def move_piece(color, start_pos, end_pos)
-    #begin
-    p start_pos
-    p end_pos
-      raise StandardError, "Choose a start position that contains a piece." if self[start_pos].is_a?(NullPiece)
-      raise StandardError, "You can't move to that position." unless self[end_pos].is_a?(NullPiece)
-    #rescue StandardError => e
-      #puts e
-      #retry
-    #end
+  def in_check?(color)
+    king_pos = find_king(color)
+    (0..7).each do |y|
+      (0..7).each do |x|
+        if @grid[y][x].color != color && @grid[y][x].color != nil
+          # debugger
+          if @grid[y][x].move_dirs.nil?
+            next
+          else
+            @grid[y][x].move_dirs.each do |pos|
+              return true if pos == king_pos
+            end
+          end
+        end
+      end
+    end
+    false
+  end
 
-    move_piece!(color, start_pos, end_pos)
+  def find_king(color)
+    king_pos = []
+    (0..7).each do |y|
+      break unless king_pos.empty?
+      (0..7).each do |x|
+        if @grid[y][x].is_a?(King)
+          if @grid[y][x].color == color
+            king_pos += [y,x]
+            break
+          end
+        end
+      end
+    end
+    king_pos
+  end
+
+  def checkmate?(color)
+    if in_check?(color)
+      (0..7).each do |y|
+        (0..7).each do |x|
+          if @grid[y][x].is_a?(NullPiece)
+          elsif @grid[y][x].color == color
+            return false if !@grid[y][x].valid_moves.empty?
+          end
+        end
+      end
+    else
+      return false
+    end
+    return true
+  end
+
+  def move_piece(color, start_pos, end_pos)
+    begin
+      if self[start_pos].is_a?(NullPiece) || self[start_pos].color != color
+        raise StandardError, "Choose a start position that contains a #{color} piece."
+      end
+      if self[start_pos].valid_moves.include?(end_pos) == false
+        raise StandardError, "You can't move to that position."
+      end
+    rescue StandardError => e
+      puts e
+      retry
+    end
+    self[start_pos].pos = end_pos
+    self[end_pos].pos = start_pos
+    self[end_pos], self[start_pos] = self[start_pos], self
   end
 
   def move_piece!(color, start_pos, end_pos)
+    self[start_pos].pos = end_pos
+    self[end_pos].pos = start_pos
     self[end_pos], self[start_pos] = self[start_pos], self[end_pos]
   end
+
 
   def valid_pos?(pos)
     pos.none? { |el| el > 7 || el < 0}

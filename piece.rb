@@ -16,11 +16,37 @@ class Piece
     @pos = pos
     @board = board
   end
-#
-# def inspect
-#   "P"
-# end
 
+  def valid_moves
+
+    val_moves = []
+    pos_moves = move_dirs
+    return val_moves if pos_moves.nil?
+    pos_moves.each do |moves|
+      val_moves << moves if move_into_check?(moves) == false
+    end
+    val_moves
+  end
+
+  def move_into_check?(end_pos)
+    curr_pos = @pos
+    # board_dup = Board.new
+    # board_dup.grid = deep_dup(@board.grid)
+    # @board = board_dup
+    @board.move_piece(@color, @pos, end_pos)
+    # debugger
+    if @board.in_check?(@color)
+      @board.move_piece!(@color, end_pos, curr_pos)
+      true
+    else
+      @board.move_piece!(@color, end_pos, curr_pos)
+      false
+    end
+  end
+
+  def deep_dup(arr)
+    arr.map { |el| el.is_a?(Array) ? deep_dup(el) : el }
+  end
 end
 
 
@@ -78,6 +104,7 @@ class Queen < Piece
 end
 
 class King < Piece
+  # attr_accessor :color
   include StepablePiece
   def move_dirs
     move_diffs = [[0,1], [1,0], [1,1], [0,-1], [-1,0], [-1,-1], [-1,1], [1,-1]]
@@ -117,7 +144,7 @@ class Pawn < Piece
 
   include PawnMoves
   def move_dirs
-    debugger
+
     # move_diffs = [[1,0],[1,-1],[1 ,1],[-1,0][-1,-1],[-1,1]]
     moves
   end
